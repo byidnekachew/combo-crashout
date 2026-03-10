@@ -61,14 +61,14 @@ class Player {
         if (this.attackTimer > 0) return;
         this.state = "punch";
         this.attackTimer = 12;
-        this.attackBox = { x: this.x + this.width, y: this.y + 30, width: 40, height: 18, damage: 5 };
+        this.attackBox = { x: this.x + this.width, y: this.y + 35, width: 28, height: 14, damage: 5, knockback: 2 };
     }
 
     kick() {
         if (this.attackTimer > 0) return;
         this.state = "kick";
         this.attackTimer = 16;
-        this.attackBox = { x: this.x + this.width, y: this.y + 50, width: 50, height: 18, damage: 7 };
+        this.attackBox = { x: this.x + this.width, y: this.y + 52, width: 32, height: 14, damage: 7, knockback: 3 };
     }
 
     uppercut() {
@@ -76,7 +76,7 @@ class Player {
         this.state = "uppercut";
         this.attackTimer = 20;
         this.vy = -8;
-        this.attackBox = { x: this.x + this.width - 10, y: this.y, width: 36, height: 48, damage: 10 };
+        this.attackBox = { x: this.x + this.width - 10, y: this.y + 5, width: 26, height: 36, damage: 10, knockback: 4 };
     }
 
     /* ── Update ── */
