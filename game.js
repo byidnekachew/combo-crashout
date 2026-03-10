@@ -5,8 +5,8 @@ const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
 
 // Create player and enemy
-const player = new Player(200, 396, "sprite_sheet_clean.png");
-const enemy = new Enemy(600, 396);
+const player = new Player(200, 402, "sprite_sheet_clean.png");
+const enemy = new Enemy(600, 402);
 
 // Track keys pressed
 const keys = {};

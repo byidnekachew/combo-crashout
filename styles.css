@@ -1,12 +1,12 @@
 body{
-background:#0b0b0b;
+background:#e71515;
 color:white;
 text-align:center;
 font-family:Arial;
 }
 
 canvas{
-background:#111;
+background:#d60202;
 display:block;
 margin:auto;
 border:2px solid white;
