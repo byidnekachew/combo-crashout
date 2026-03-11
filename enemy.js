@@ -5,40 +5,32 @@ class Enemy {
         this.x = x;
         this.y = y;
 
-        // Sprite sheet cell size (source)
-        this.width  = 201; // 1206px / 6 cols
-        this.height = 231; // 924px  / 4 rows
+        this.width  = 201;
+        this.height = 231;
 
-        // On-screen draw size (scaled to match player)
         this.drawWidth  = 88;
         this.drawHeight = 102;
 
-        // Physics
         this.vx = 0;
         this.vy = 0;
         this.speed     = 3;
         this.jumpForce = -14;
         this.gravity   = 0.6;
-        this.ground    = 398; // canvas 500 - drawHeight 102
+        this.ground    = 398;
 
-        // Combat stats
         this.health     = 100;
         this.hitstun    = 0;
         this.comboCount = 0;
 
-        // Attack
         this.attackBox   = null;
         this.attackTimer = 0;
 
-        // Animation
         this.state        = "idle";
         this.currentFrame = 0;
         this.frameCounter = 0;
 
-        // AI
         this.aiTimer = 0;
 
-        // Sprite — 4 rows: idle, punch, kick, jump
         this.spriteSheet = new Image();
         this.spriteSheet.src = "teacher_sprite_sheet.png";
         this.spriteLoaded = false;
@@ -61,10 +53,8 @@ class Enemy {
         const dist = this.x - player.x;
 
         if (Math.abs(dist) > 180) {
-            // Move toward player
             this.vx = dist > 0 ? -this.speed : this.speed;
         } else if (Math.abs(dist) < 100) {
-            // Close enough — attack
             const roll = Math.random();
             if (roll < 0.5)      this.punch();
             else if (roll < 0.8) this.kick();
@@ -76,7 +66,6 @@ class Enemy {
     }
 
     /* ── Attacks ── */
-    // Enemy faces LEFT, so attacks fire to the left (x - offset)
     punch() {
         if (this.attackTimer > 0) return;
         this.state = "punch";
@@ -98,11 +87,14 @@ class Enemy {
         }
     }
 
-    /* ── Update ── */
+    /* ── Update ──
+       Pass player=null during the pre-fight countdown to keep enemy idle. */
     update(player) {
         if (this.hitstun > 0) this.hitstun--;
 
-        this.updateAI(player);
+        // Only run AI when player reference is provided (post-countdown)
+        if (player) this.updateAI(player);
+        else        this.vx = 0; // stand still during countdown
 
         this.x += this.vx;
         this.vy += this.gravity;
@@ -153,14 +145,13 @@ class Enemy {
         }
 
         const anim = this.animations[this.state];
-
         ctx.drawImage(
             this.spriteSheet,
-            this.currentFrame * this.width,  // source x
-            anim.row          * this.height, // source y
-            this.width,  this.height,        // source size
-            this.x,      this.y,             // dest position
-            this.drawWidth, this.drawHeight  // dest size (scaled down)
+            this.currentFrame * this.width,
+            anim.row          * this.height,
+            this.width,  this.height,
+            this.x,      this.y,
+            this.drawWidth, this.drawHeight
         );
     }
 }
