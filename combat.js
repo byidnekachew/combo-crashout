@@ -86,8 +86,42 @@ const comboDisplay = {
     }
 };
 
+// ── Shield block effect ──
+function spawnShieldBlockEffect(x, y) {
+    // Bright blue-white burst rings
+    effectManager.spawn(new BurstRing(x, y, "#aaddff", 40, 4));
+    effectManager.spawn(new BurstRing(x, y, "#ffffff", 22, 2));
+    // Sparks that fan outward
+    const colors = ["#aaddff", "#ffffff", "#88ccff"];
+    for (let i = 0; i < 14; i++) {
+        const angle = Math.random() * Math.PI * 2;
+        const speed = 2 + Math.random() * 4;
+        effectManager.spawn(new Spark(x, y, colors[Math.floor(Math.random() * 3)], angle, speed));
+    }
+}
+
 // ── Apply Hit ──
 function applyHit(attacker, defender, baseDamage, knockbackDir, knockback) {
+
+    // ── Shield intercept ──
+    // Only the player has a shield; absorbHit() returns true if it blocked the hit.
+    if (typeof defender.absorbHit === "function" && defender.absorbHit()) {
+        // Hit was blocked — show a block effect and small knockback push but no damage
+        const bx = defender.x + (defender.drawWidth  || defender.width)  / 2;
+        const by = defender.y + (defender.drawHeight || defender.height) / 2;
+        spawnShieldBlockEffect(bx, by);
+
+        // Small shove so blocking doesn't feel static
+        defender.vx = knockbackDir * 1.5;
+
+        // Flash the screen lightly in blue
+        screenFlash.active = true;
+        screenFlash.timer  = screenFlash.duration;
+        screenFlash.color  = "rgba(100,180,255,0.18)";
+        return; // no damage applied
+    }
+
+    // ── Normal hit ──
     const combo = checkCombo();
     let finalDamage = baseDamage, tier = 1;
 

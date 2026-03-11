@@ -24,8 +24,7 @@ body {
 /* scanline overlay */
 body::after {
     content: '';
-    position: fixed;
-    inset: 0;
+    position: fixed; inset: 0;
     background: repeating-linear-gradient(
         to bottom,
         transparent 0px, transparent 3px,
@@ -61,13 +60,11 @@ body::after {
     top: 42%; left: 50%; transform: translate(-50%,-60%);
     pointer-events: none;
 }
-
 .title-eyebrow {
     font-size: 13px; font-weight: 700;
     letter-spacing: 9px; color: #cc3333;
     text-transform: uppercase; margin-bottom: 4px;
 }
-
 .title-main {
     font-family: 'Bebas Neue', sans-serif;
     font-size: 108px; line-height: 0.88; letter-spacing: 4px;
@@ -81,16 +78,12 @@ body::after {
     0%,100% { filter: drop-shadow(0 0 32px rgba(210,35,35,0.55)); }
     50%     { filter: drop-shadow(0 0 58px rgba(210,35,35,0.9)); }
 }
-
 .title-sub {
     font-size: 16px; font-weight: 600; letter-spacing: 7px;
     color: rgba(255,255,255,0.38); margin-top: 6px; margin-bottom: 36px;
     text-transform: uppercase;
 }
-
-.matchup {
-    display: flex; align-items: center; gap: 32px; margin-bottom: 40px;
-}
+.matchup { display: flex; align-items: center; gap: 32px; margin-bottom: 40px; }
 .fighter-card { display: flex; flex-direction: column; align-items: center; gap: 7px; }
 .fighter-card canvas {
     image-rendering: pixelated;
@@ -116,7 +109,6 @@ body::after {
     text-transform: uppercase;
 }
 .btn:active { transform: scale(0.96); }
-
 .btn-primary {
     font-size: 28px; padding: 13px 56px;
     background: #cc2222; color: #fff;
@@ -126,7 +118,6 @@ body::after {
     background: #e02828;
     box-shadow: 0 0 42px rgba(200,35,35,0.78), inset 0 1px 0 rgba(255,255,255,0.2);
 }
-
 .btn-secondary {
     font-size: 17px; padding: 9px 30px; margin-top: 11px;
     background: transparent; color: rgba(255,255,255,0.45);
@@ -136,16 +127,11 @@ body::after {
 
 /* ── CONTROLS SCREEN ── */
 #screen-controls { gap: 24px; }
-
 .controls-title {
     font-family: 'Bebas Neue', sans-serif;
     font-size: 50px; letter-spacing: 5px;
 }
-
-.controls-grid {
-    display: grid; grid-template-columns: 1fr 1fr;
-    gap: 16px; width: 680px;
-}
+.controls-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; width: 680px; }
 .controls-section {
     background: rgba(255,255,255,0.04);
     border: 1px solid rgba(255,255,255,0.09);
@@ -168,7 +154,6 @@ body::after {
     font-family: 'Barlow Condensed', sans-serif; font-weight: 700;
     font-size: 13px; color: #fff; min-width: 26px; text-align: center;
 }
-
 .combo-table {
     width: 680px;
     background: rgba(255,255,255,0.03);
@@ -180,34 +165,20 @@ body::after {
     color: #cc3333; margin-bottom: 10px;
     border-bottom: 1px solid rgba(204,51,51,0.28); padding-bottom: 7px;
 }
-.combo-rows {
-    display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 5px 16px;
-}
-.combo-entry {
-    display: flex; align-items: center; gap: 7px;
-    font-size: 13px; color: rgba(255,255,255,0.6);
-}
-.combo-keys {
-    font-family: 'Bebas Neue', sans-serif; font-size: 15px;
-    color: #FFD700; white-space: nowrap;
-}
-.tier-badge {
-    font-size: 10px; font-weight: 700; letter-spacing: 1px;
-    padding: 1px 5px; border-radius: 2px; margin-left: auto;
-}
+.combo-rows { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 5px 16px; }
+.combo-entry { display: flex; align-items: center; gap: 7px; font-size: 13px; color: rgba(255,255,255,0.6); }
+.combo-keys { font-family: 'Bebas Neue', sans-serif; font-size: 15px; color: #FFD700; white-space: nowrap; }
+.tier-badge { font-size: 10px; font-weight: 700; letter-spacing: 1px; padding: 1px 5px; border-radius: 2px; margin-left: auto; }
 .tier-2 { background: rgba(255,220,50,0.18); color: #FFD700; }
 .tier-3 { background: rgba(255,80,80,0.18);  color: #ff6060; }
-
 .btn-row { display: flex; flex-direction: column; align-items: center; }
 
 /* ── GAME SCREEN ── */
 #screen-game { gap: 0; position: relative; }
-
 #screen-game h1 {
     font-family: 'Bebas Neue', sans-serif; font-size: 24px;
     letter-spacing: 7px; color: rgba(255,255,255,0.3); margin-bottom: 7px;
 }
-
 canvas#gameCanvas {
     background: #1a1919; display: block;
     border: 2px solid rgba(255,255,255,0.18);
@@ -226,9 +197,8 @@ canvas#gameCanvas {
     text-shadow: 0 0 60px rgba(220,40,40,0.9);
     opacity: 0; transform: scale(1.6);
 }
-#countdown-number.pop  { animation: countPop  0.9s ease forwards; }
-#countdown-number.fight { animation: fightPop 1.1s ease forwards; color: #dd2222; text-shadow: 0 0 80px rgba(220,40,40,1); }
-
+#countdown-number.pop   { animation: countPop  0.9s ease forwards; }
+#countdown-number.fight { animation: fightPop  1.1s ease forwards; color: #dd2222; text-shadow: 0 0 80px rgba(220,40,40,1); }
 @keyframes countPop {
     0%   { opacity: 1; transform: scale(1.5); }
     25%  { opacity: 1; transform: scale(1.0); }
@@ -243,11 +213,96 @@ canvas#gameCanvas {
     100% { opacity: 0; transform: scale(1.08); }
 }
 
+/* ── END SCREEN OVERLAY ── */
+#end-overlay {
+    display: none;
+    position: absolute;
+    top: 32px; left: 0; right: 0; bottom: 0;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0;
+    background: rgba(0,0,0,0.78);
+    backdrop-filter: blur(4px);
+    z-index: 30;
+}
+#end-overlay.visible {
+    display: flex;
+    animation: fadeIn 0.4s ease;
+}
+
+.end-ko {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 96px; line-height: 1; letter-spacing: 6px;
+    color: #fff;
+    text-shadow: 0 0 50px rgba(255,80,80,0.8);
+    animation: koSlam 0.4s cubic-bezier(0.22,1,0.36,1) both;
+}
+@keyframes koSlam {
+    from { transform: scale(2.2); opacity: 0; }
+    to   { transform: scale(1);   opacity: 1; }
+}
+
+/* winner label + sprite block */
+.end-winner-block {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 10px;
+    margin-bottom: 28px;
+    animation: fadeIn 0.5s 0.2s ease both;
+    opacity: 0;
+    animation-fill-mode: forwards;
+}
+
+.end-winner-label {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 13px; font-weight: 700;
+    letter-spacing: 10px;
+    color: rgba(255,255,255,0.45);
+    text-transform: uppercase;
+    margin-bottom: 10px;
+}
+
+/* The sprite is drawn at 3× scale for visibility */
+#winner-sprite-canvas {
+    image-rendering: pixelated;
+    /* glow that pulses behind the winner sprite */
+    filter: drop-shadow(0 0 18px rgba(255,215,0,0.7));
+    animation: winnerGlow 1.8s ease-in-out infinite;
+}
+@keyframes winnerGlow {
+    0%,100% { filter: drop-shadow(0 0 14px rgba(255,215,0,0.55)); }
+    50%     { filter: drop-shadow(0 0 32px rgba(255,215,0,0.95)); }
+}
+
+.end-winner-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 28px; letter-spacing: 6px;
+    color: #FFD700;
+    margin-top: 10px;
+    text-shadow: 0 0 14px rgba(255,215,0,0.5);
+}
+
+.end-divider {
+    width: 260px; height: 1px;
+    background: linear-gradient(to right, transparent, rgba(255,255,255,0.2), transparent);
+    margin-bottom: 26px;
+    animation: fadeIn 0.5s 0.35s ease both;
+    opacity: 0; animation-fill-mode: forwards;
+}
+
+.end-buttons {
+    display: flex; flex-direction: column; align-items: center;
+    animation: fadeIn 0.5s 0.45s ease both;
+    opacity: 0; animation-fill-mode: forwards;
+}
+
 </style>
 </head>
 <body>
 
-<!-- TITLE SCREEN -->
+<!-- ══ TITLE SCREEN ══ -->
 <div class="screen active" id="screen-title">
     <div class="title-glow"></div>
     <div class="title-eyebrow">Student vs Teacher</div>
@@ -268,7 +323,7 @@ canvas#gameCanvas {
     <button class="btn btn-secondary" onclick="startGame()">SKIP TO FIGHT</button>
 </div>
 
-<!-- CONTROLS SCREEN -->
+<!-- ══ CONTROLS SCREEN ══ -->
 <div class="screen" id="screen-controls">
     <div class="controls-title">How to Play</div>
     <div class="controls-grid">
@@ -276,6 +331,7 @@ canvas#gameCanvas {
             <h3>Movement</h3>
             <div class="key-row"><span class="key">A</span><span class="key">D</span> or <span class="key">←</span><span class="key">→</span>&nbsp; Move left / right</div>
             <div class="key-row"><span class="key">W</span> or <span class="key">↑</span>&nbsp; Jump</div>
+            <div class="key-row"><span class="key">SPACE</span>&nbsp; Hold to raise shield &nbsp;<span style="color:rgba(255,255,255,0.32);font-size:12px">5 hits max</span></div>
         </div>
         <div class="controls-section">
             <h3>Attacks</h3>
@@ -306,12 +362,31 @@ canvas#gameCanvas {
     </div>
 </div>
 
-<!-- GAME SCREEN -->
+<!-- ══ GAME SCREEN ══ -->
 <div class="screen" id="screen-game" style="position:relative;">
     <h1>COMBO CRASHOUT</h1>
     <canvas id="gameCanvas" width="900" height="500"></canvas>
+
+    <!-- Countdown overlay -->
     <div id="countdown-overlay">
         <div id="countdown-number"></div>
+    </div>
+
+    <!-- End screen overlay -->
+    <div id="end-overlay">
+        <div class="end-ko">K.O.</div>
+
+        <div class="end-winner-block">
+            <div class="end-winner-label">Winner</div>
+            <canvas id="winner-sprite-canvas"></canvas>
+            <div class="end-winner-name" id="end-winner-name"></div>
+        </div>
+
+        <div class="end-divider"></div>
+        <div class="end-buttons">
+            <button class="btn btn-primary" onclick="rematch()">REMATCH</button>
+            <button class="btn btn-secondary" onclick="goToTitle()">← HOME</button>
+        </div>
     </div>
 </div>
 
@@ -322,7 +397,7 @@ canvas#gameCanvas {
 <script src="game.js"></script>
 
 <script>
-// ── sprite previews ──
+// ── sprite previews on title ──
 (function() {
     const pi = new Image(); pi.src = "sprite_sheet_clean.png";
     pi.onload = () => {
@@ -343,13 +418,115 @@ function showScreen(id) {
     document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
     document.getElementById(id).classList.add('active');
 }
-function goToTitle()    { showScreen('screen-title'); }
+function goToTitle() {
+    stopWinnerAnimation();
+    hideEndScreen();
+    showScreen('screen-title');
+}
 function goToControls() { showScreen('screen-controls'); }
 
 function startGame() {
+    stopWinnerAnimation();
+    hideEndScreen();
     showScreen('screen-game');
-    initGame();       // defined in game.js — resets state
+    initGame();
     beginCountdown();
+}
+function rematch() {
+    stopWinnerAnimation();
+    hideEndScreen();
+    initGame();
+    beginCountdown();
+}
+
+// ── end screen ──
+// Sprite configs for the winner animation
+const WINNER_CONFIGS = {
+    player: {
+        src:        "sprite_sheet_clean.png",
+        frameW:     88,   frameH:  98,
+        drawW:      88,   drawH:   98,
+        idleRow:    0,    idleFrames: 6,
+        scale:      3,
+        label:      "PLAYER WINS"
+    },
+    enemy: {
+        src:        "teacher_sprite_sheet.png",
+        frameW:     201,  frameH:  231,
+        drawW:      88,   drawH:   102,
+        idleRow:    0,    idleFrames: 6,
+        scale:      3,
+        label:      "TEACHER WINS"
+    }
+};
+
+let _winnerAnimId   = null;
+let _winnerFrame    = 0;
+let _winnerTick     = 0;
+const WINNER_FPS_INTERVAL = 8; // advance frame every N animation ticks (~8 frames @ 60fps)
+
+function showEndScreen(winnerId) {
+    const cfg = WINNER_CONFIGS[winnerId];
+    const spriteCanvas = document.getElementById('winner-sprite-canvas');
+    const sCtx         = spriteCanvas.getContext('2d');
+
+    // Size the canvas to 3× the draw size
+    spriteCanvas.width  = cfg.drawW * cfg.scale;
+    spriteCanvas.height = cfg.drawH * cfg.scale;
+    sCtx.imageSmoothingEnabled = false;
+
+    document.getElementById('end-winner-name').textContent = cfg.label;
+
+    // Load (or reuse) the sprite image
+    const img = new Image();
+    img.src = cfg.src;
+
+    _winnerFrame = 0;
+    _winnerTick  = 0;
+
+    function animate() {
+        sCtx.clearRect(0, 0, spriteCanvas.width, spriteCanvas.height);
+        sCtx.drawImage(
+            img,
+            _winnerFrame * cfg.frameW,          // source x
+            cfg.idleRow  * cfg.frameH,          // source y  (row 0 = idle)
+            cfg.frameW,  cfg.frameH,            // source size
+            0, 0,                               // dest position
+            cfg.drawW * cfg.scale,              // dest width  (scaled up)
+            cfg.drawH * cfg.scale               // dest height (scaled up)
+        );
+
+        _winnerTick++;
+        if (_winnerTick >= WINNER_FPS_INTERVAL) {
+            _winnerTick  = 0;
+            _winnerFrame = (_winnerFrame + 1) % cfg.idleFrames;
+        }
+        _winnerAnimId = requestAnimationFrame(animate);
+    }
+
+    // Start once image is ready
+    if (img.complete) {
+        animate();
+    } else {
+        img.onload = animate;
+    }
+
+    // Show overlay
+    const overlay = document.getElementById('end-overlay');
+    overlay.classList.remove('visible');
+    void overlay.offsetWidth;
+    overlay.classList.add('visible');
+}
+
+function hideEndScreen() {
+    document.getElementById('end-overlay').classList.remove('visible');
+}
+
+function stopWinnerAnimation() {
+    if (_winnerAnimId !== null) {
+        cancelAnimationFrame(_winnerAnimId);
+        _winnerAnimId = null;
+    }
 }
 
 // ── countdown ──
@@ -363,7 +540,7 @@ function beginCountdown() {
         if (i >= steps.length) { window._countdownDone = true; return; }
         el.className = '';
         el.textContent = steps[i];
-        void el.offsetWidth; // force reflow → restart animation
+        void el.offsetWidth;
         el.className = steps[i] === 'FIGHT!' ? 'fight' : 'pop';
         i++;
         setTimeout(tick, 1000);
