@@ -7,6 +7,7 @@ let player, enemy;
 const keys = {};
 let gameOver    = false;
 let gameStarted = false;
+let gamePaused  = false;
 
 // ── Mode & Difficulty ──
 window.gameMode       = "1p";   // "1p" | "2p"
@@ -296,8 +297,7 @@ class Player2 {
         this.attackBox     = null;
         this.attackTimer   = 0;
         this.attackLockout = 0;
-        this.airUppercutCount = 0;
-        this.canUppercutJump  = false;
+        this.airMovesUsed  = 0;
 
         this.shieldActive   = false;
         this.shieldHp       = 5; this.shieldMax = 5;
@@ -328,9 +328,9 @@ class Player2 {
     jump() {
         if (this.y >= this.ground) {
             this.vy = this.jumpForce; this.state = "jump";
-        } else if (this.canUppercutJump) {
+        } else if (this.airMovesUsed < 1) {
             this.vy = this.jumpForce; this.state = "jump";
-            this.canUppercutJump = false;
+            this.airMovesUsed++;
         }
     }
 
@@ -360,10 +360,9 @@ class Player2 {
     }
     uppercut() {
         if (this.attackLockout > 0) return;
-        if (this.airUppercutCount >= 2) return;
+        if (this.y < this.ground && this.airMovesUsed >= 1) return;
         this.state = "uppercut"; this.attackTimer = 20; this.attackLockout = 8;
-        this.airUppercutCount++;
-        this.canUppercutJump = true;
+        if (this.y < this.ground) this.airMovesUsed++;
         this.vy = -8;
         this.attackBox = { x: this.x - 26, y: this.y + 5, width: 26, height: 36, damage: 10, knockback: 4 };
     }
@@ -379,7 +378,7 @@ class Player2 {
         if (this.attackLockout > 0) this.attackLockout--;
 
         this.x += this.vx; this.vy += this.gravity; this.y += this.vy;
-        if (this.y >= this.ground) { this.y = this.ground; this.vy = 0; this.airUppercutCount = 0; this.canUppercutJump = false; if (this.state === "jump") this.state = "idle"; }
+        if (this.y >= this.ground) { this.y = this.ground; this.vy = 0; this.airMovesUsed = 0; if (this.state === "jump") this.state = "idle"; }
 
         if (this.attackTimer > 0) {
             this.attackTimer--;
@@ -454,7 +453,15 @@ class Player2 {
 // ==============================
 document.addEventListener("keydown", e => {
     keys[e.key] = true;
-    if (!gameStarted || !window._countdownDone) return;
+
+    // ESC toggles pause at any time during an active game
+    if (e.key === "Escape" && gameStarted && !gameOver) {
+        e.preventDefault();
+        togglePause();
+        return;
+    }
+
+    if (!gameStarted || !window._countdownDone || gamePaused) return;
 
     // ── Player 1 ──
     if (e.key === "s" || e.key === "S") { e.preventDefault(); player.shieldOn(); return; }
@@ -486,7 +493,7 @@ document.addEventListener("keyup", e => {
 // GAME UPDATE
 // ==============================
 function update() {
-    if (!gameStarted || roundTransition) return;
+    if (!gameStarted || roundTransition || gamePaused) return;
 
     tickFrame();
     screenFlash.update();
@@ -572,6 +579,39 @@ function update() {
                 });
             }, 1200);
         }
+    }
+}
+
+// ── Pause ──
+function togglePause() {
+    gamePaused = !gamePaused;
+    const overlay = document.getElementById("pause-overlay");
+    if (gamePaused) {
+        const ctrl = document.getElementById("pause-controls");
+        if (window.gameMode === "2p") {
+            ctrl.innerHTML = `
+                <div class="ctrl-col">
+                    <h4>Player 1</h4>
+                    A / D — move<br>W — jump &nbsp; S — shield<br>C — punch &nbsp; V — kick &nbsp; B — uppercut
+                </div>
+                <div class="ctrl-col p2">
+                    <h4>Player 2</h4>
+                    ← / → — move<br>↑ — jump &nbsp; ↓ — shield<br>, — punch &nbsp; . — kick &nbsp; / — uppercut
+                </div>`;
+        } else {
+            ctrl.innerHTML = `
+                <div class="ctrl-col">
+                    <h4>Controls</h4>
+                    A / D — move &nbsp;&nbsp; W — jump &nbsp;&nbsp; S — shield<br>
+                    C — punch &nbsp;&nbsp; V — kick &nbsp;&nbsp; B — uppercut<br><br>
+                    <span style="color:#FFD700">Combos:</span> C+C &nbsp; C+C+V &nbsp; C+V+B &nbsp; V+V &nbsp; W+C &nbsp; W+V+B &nbsp; and more...
+                </div>`;
+        }
+        overlay.classList.add("visible");
+        SFX.setMusicVolume(0.06);
+    } else {
+        overlay.classList.remove("visible");
+        SFX.setMusicVolume(_soundMuted ? 0 : 0.18);
     }
 }
 
@@ -729,17 +769,6 @@ function draw() {
     }
 
     comboDisplay.draw(ctx, canvas.width);
-
-    // ── Controls hint ──
-    ctx.textAlign = "left";
-    ctx.fillStyle = "rgba(255,255,255,0.22)";
-    ctx.font = "10px Arial";
-    if (window.gameMode === "2p") {
-        ctx.fillText("P1: A/D move  W jump  C punch  V kick  B uppercut  S shield", 10, canvas.height - 18);
-        ctx.fillText("P2: ←/→ move  ↑ jump  , punch  . kick  / uppercut  ↓ shield", 10, canvas.height - 6);
-    } else {
-        ctx.fillText("COMBOS: C+C  C+C+V  C+V+B  V+V  W+C  W+V+B  and more...", 12, canvas.height - 10);
-    }
 
     // ── KO overlay ──
     if (gameOver) {

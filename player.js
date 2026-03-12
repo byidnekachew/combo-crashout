@@ -23,9 +23,8 @@ class Player {
         // Attack box
         this.attackBox     = null;
         this.attackTimer   = 0;
-        this.attackLockout = 0;  // separate short window that gates new attack inputs
-        this.airUppercutCount = 0; // max 2 uppercuts before landing
-        this.canUppercutJump  = false; // grants a jump after uppercut launches you
+        this.attackLockout = 0;
+        this.airMovesUsed  = 0; // tracks air jump + air uppercut — max 1 total before landing
 
         // ── Shield ──
         this.shieldActive   = false;  // is SPACE held right now?
@@ -65,13 +64,14 @@ class Player {
 
     jump() {
         if (this.y >= this.ground) {
+            // Normal ground jump — free, doesn't cost an air move
             this.vy = this.jumpForce;
             this.state = "jump";
-        } else if (this.canUppercutJump) {
-            // Allow one jump after an uppercut launches you airborne
+        } else if (this.airMovesUsed < 1) {
+            // One air jump allowed
             this.vy = this.jumpForce;
             this.state = "jump";
-            this.canUppercutJump = false;
+            this.airMovesUsed++;
         }
     }
 
@@ -125,12 +125,11 @@ class Player {
 
     uppercut() {
         if (this.attackLockout > 0) return;
-        if (this.airUppercutCount >= 2) return; // max 2 in the air
+        if (this.y < this.ground && this.airMovesUsed >= 1) return; // only one air move
         this.state = "uppercut";
         this.attackTimer   = 20;
         this.attackLockout = 8;
-        this.airUppercutCount++;
-        this.canUppercutJump = true;
+        if (this.y < this.ground) this.airMovesUsed++; // costs an air move if already airborne
         this.vy = -8;
         this.attackBox = { x: this.x + this.width - 10, y: this.y + 5, width: 26, height: 36, damage: 10, knockback: 4 };
     }
@@ -159,8 +158,7 @@ class Player {
         if (this.y >= this.ground) {
             this.y  = this.ground;
             this.vy = 0;
-            this.airUppercutCount = 0;
-            this.canUppercutJump  = false;
+            this.airMovesUsed = 0;
             if (this.state === "jump") this.state = "idle";
         }
 

@@ -291,7 +291,47 @@ canvas#gameCanvas {
 }
 #sound-toggle:hover { color: #fff; border-color: rgba(255,255,255,0.5); }
 
-/* ── END SCREEN OVERLAY ── */
+/* ── PAUSE OVERLAY ── */
+#pause-overlay {
+    display: none;
+    position: absolute;
+    top: 32px; left: 0; right: 0; bottom: 0;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    background: rgba(0,0,0,0.72);
+    backdrop-filter: blur(6px);
+    z-index: 40;
+}
+#pause-overlay.visible { display: flex; animation: fadeIn 0.2s ease; }
+.pause-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 80px; letter-spacing: 8px; color: #fff;
+    text-shadow: 0 0 40px rgba(220,40,40,0.7);
+    line-height: 1;
+}
+.pause-subtitle {
+    font-size: 14px; font-weight: 600; letter-spacing: 6px;
+    color: rgba(255,255,255,0.35); text-transform: uppercase;
+    margin-bottom: 12px;
+}
+.pause-divider {
+    width: 200px; height: 1px;
+    background: linear-gradient(to right, transparent, rgba(255,255,255,0.2), transparent);
+    margin: 4px 0 16px;
+}
+#pause-controls {
+    display: flex; gap: 24px;
+    font-size: 13px; color: rgba(255,255,255,0.55);
+    line-height: 1.8;
+}
+#pause-controls .ctrl-col h4 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 15px; letter-spacing: 3px;
+    color: rgba(255,255,255,0.8); margin-bottom: 4px;
+}
+#pause-controls .ctrl-col.p2 h4 { color: #4488ff; }
 #end-overlay {
     display: none;
     position: absolute;
@@ -472,12 +512,13 @@ canvas#gameCanvas {
 </div>
 
 <!-- ══ GAME SCREEN ══ -->
-<div class="screen" id="screen-game" style="position:relative;">
-    <h1>COMBO CRASHOUT</h1>
+<div id="screen-game" class="screen" style="position:relative;">
+    <div style="position:relative;width:900px;display:flex;align-items:center;justify-content:center;margin-bottom:4px;">
+        <h1 style="margin:0;">COMBO CRASHOUT</h1>
+        <span style="position:absolute;right:36px;font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:400;letter-spacing:3px;color:rgba(255,255,255,0.28);">ESC — PAUSE</span>
+        <button id="sound-toggle" onclick="toggleSound()" title="Toggle sound" style="position:absolute;right:0;background:none;border:none;cursor:pointer;font-size:16px;padding:0;line-height:1;">🔊</button>
+    </div>
     <canvas id="gameCanvas" width="900" height="500"></canvas>
-
-    <!-- Sound toggle -->
-    <button id="sound-toggle" onclick="toggleSound()" title="Toggle sound">🔊</button>
 
     <!-- Countdown overlay -->
     <div id="countdown-overlay">
@@ -486,6 +527,17 @@ canvas#gameCanvas {
 
     <!-- Round banner -->
     <div id="round-banner" class="hidden"></div>
+
+    <!-- Pause overlay -->
+    <div id="pause-overlay">
+        <div class="pause-title">PAUSED</div>
+        <div class="pause-subtitle">Press ESC to resume</div>
+        <div class="pause-divider"></div>
+        <div id="pause-controls"></div>
+        <div class="pause-divider"></div>
+        <button class="btn btn-primary" onclick="togglePause()">RESUME</button>
+        <button class="btn btn-secondary" onclick="goToTitle()">← QUIT TO MENU</button>
+    </div>
 
     <!-- End screen overlay -->
     <div id="end-overlay">
@@ -534,6 +586,8 @@ function showScreen(id) {
 }
 function goToTitle() {
     stopWinnerAnimation(); hideEndScreen();
+    gamePaused = false;
+    document.getElementById("pause-overlay").classList.remove("visible");
     SFX.stopMusic();
     showScreen('screen-title');
 }
