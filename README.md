@@ -7,7 +7,7 @@ Combo Crashout is a fighter game where you can chose to play against a computer 
 ## How to Run
 **Prerequisites:** You must have a browser with HTML, CSS, and JavaScript compatibility as well as a working internet connection.
 **Instructions to run:**
-1. [Click here](https://byidnekachew.github.io/combo-crashout/) to open the game in a new tab. Alternatively, paste this plain text into a new tab in your browser: https://byidnekachew.github.io/combo-crashout/
+1. [Click here](https://byidnekachew.github.io/combo-crashout/) to open the game. Alternatively, paste this plain text into a new tab in your browser: *https://byidnekachew.github.io/combo-crashout/*
 2. Click start to just play or "How To Play" to familiarize yourself with the controls.
 
 ## Development Notes
