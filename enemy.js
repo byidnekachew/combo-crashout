@@ -61,7 +61,7 @@ class Enemy {
         this.ground    = 398;
 
         // Combat stats
-        this.health     = 100;
+        this.health     = 300;
         this.hitstun    = 0;
         this.comboCount = 0;
 

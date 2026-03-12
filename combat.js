@@ -11,7 +11,12 @@ function checkCollision(a, b) {
 
 // ── Input Buffer ──
 const INPUT_BUFFER_WINDOW = 40;
+
+// P1 buffer (j/k/l/i keys)
 const inputBuffer = [];
+// P2 buffer (1/2/3/jump keys mapped to same symbols)
+const inputBuffer2 = [];
+
 let currentFrame = 0;
 
 function tickFrame() { currentFrame++; }
@@ -21,9 +26,14 @@ function recordInput(key) {
     if (inputBuffer.length > 20) inputBuffer.shift();
 }
 
-function getRecentInputs(windowFrames) {
+function recordInput2(key) {
+    inputBuffer2.push({ key, frame: currentFrame });
+    if (inputBuffer2.length > 20) inputBuffer2.shift();
+}
+
+function getRecentInputs(buf, windowFrames) {
     const cutoff = currentFrame - windowFrames;
-    return inputBuffer.filter(e => e.frame >= cutoff).map(e => e.key);
+    return buf.filter(e => e.frame >= cutoff).map(e => e.key);
 }
 
 // ── Combos ──
@@ -42,8 +52,8 @@ const COMBO_LIST = [
     { sequence: ["i","l"],     name: "DIVE UPPERCUT",    damageMultiplier: 2.2, tier: 2 },
 ];
 
-function checkCombo() {
-    const recent = getRecentInputs(INPUT_BUFFER_WINDOW);
+function checkCombo(buf) {
+    const recent = getRecentInputs(buf || inputBuffer, INPUT_BUFFER_WINDOW);
     for (const combo of COMBO_LIST) {
         const seq = combo.sequence;
         if (recent.length < seq.length) continue;
@@ -72,16 +82,18 @@ const screenFlash = {
 
 // ── Combo Name Display ──
 const comboDisplay = {
-    name: "", timer: 0, duration: 90,
-    trigger(name) { this.name = name; this.timer = this.duration; },
+    name: "", timer: 0, duration: 90, rightSide: false,
+    trigger(name, rightSide) { this.name = name; this.timer = this.duration; this.rightSide = !!rightSide; },
     update() { if (this.timer > 0) this.timer--; },
     draw(ctx, cw) {
         if (this.timer <= 0) return;
         const alpha = Math.min(1, this.timer / 20);
+        const x = this.rightSide ? cw * 0.75 : cw * 0.25;
         ctx.save(); ctx.globalAlpha = alpha; ctx.textAlign = "center";
-        ctx.fillStyle = "#FFD700"; ctx.strokeStyle = "#000"; ctx.lineWidth = 4;
+        ctx.fillStyle = this.rightSide ? "#ff9944" : "#FFD700";
+        ctx.strokeStyle = "#000"; ctx.lineWidth = 4;
         ctx.font = "bold 22px Arial";
-        ctx.strokeText(this.name, cw/2, 115); ctx.fillText(this.name, cw/2, 115);
+        ctx.strokeText(this.name, x, 115); ctx.fillText(this.name, x, 115);
         ctx.restore();
     }
 };
@@ -101,28 +113,26 @@ function spawnShieldBlockEffect(x, y) {
 }
 
 // ── Apply Hit ──
-function applyHit(attacker, defender, baseDamage, knockbackDir, knockback) {
+function applyHit(attacker, defender, baseDamage, knockbackDir, knockback, buf) {
 
     // ── Shield intercept ──
-    // Only the player has a shield; absorbHit() returns true if it blocked the hit.
     if (typeof defender.absorbHit === "function" && defender.absorbHit()) {
-        // Hit was blocked — show a block effect and small knockback push but no damage
         const bx = defender.x + (defender.drawWidth  || defender.width)  / 2;
         const by = defender.y + (defender.drawHeight || defender.height) / 2;
         spawnShieldBlockEffect(bx, by);
-
-        // Small shove so blocking doesn't feel static
+        if (typeof SFX !== "undefined") SFX.block();
         defender.vx = knockbackDir * 1.5;
-
-        // Flash the screen lightly in blue
         screenFlash.active = true;
         screenFlash.timer  = screenFlash.duration;
         screenFlash.color  = "rgba(100,180,255,0.18)";
-        return; // no damage applied
+        return;
     }
 
     // ── Normal hit ──
-    const combo = checkCombo();
+    // buf is passed in from game.js — inputBuffer for P1, inputBuffer2 for P2
+    const activeBuf = buf || inputBuffer;
+    const isP2      = (activeBuf === inputBuffer2);
+    const combo     = checkCombo(activeBuf);
     let finalDamage = baseDamage, tier = 1;
 
     const hx = defender.x + (defender.drawWidth  || defender.width)  / 2;
@@ -136,8 +146,9 @@ function applyHit(attacker, defender, baseDamage, knockbackDir, knockback) {
     if (combo) {
         finalDamage = Math.round(baseDamage * combo.damageMultiplier);
         tier = combo.tier;
-        comboDisplay.trigger(combo.name);
-        inputBuffer.length = 0;
+        comboDisplay.trigger(combo.name, isP2);
+        activeBuf.length = 0;
+        if (typeof SFX !== "undefined") SFX.comboFinish();
         if (tier === 3) spawnComboExplosion(hx, hy);
         else            effectManager.spawn(new BurstRing(hx, hy, "#fff", 55, 4));
     }

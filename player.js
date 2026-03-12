@@ -16,13 +16,16 @@ class Player {
         this.ground    = 402;
 
         // Combat stats
-        this.health     = 100;
+        this.health     = 300;
         this.hitstun    = 0;
         this.comboCount = 0;
 
         // Attack box
-        this.attackBox   = null;
-        this.attackTimer = 0;
+        this.attackBox     = null;
+        this.attackTimer   = 0;
+        this.attackLockout = 0;  // separate short window that gates new attack inputs
+        this.airUppercutCount = 0; // max 2 uppercuts before landing
+        this.canUppercutJump  = false; // grants a jump after uppercut launches you
 
         // ── Shield ──
         this.shieldActive   = false;  // is SPACE held right now?
@@ -64,6 +67,11 @@ class Player {
         if (this.y >= this.ground) {
             this.vy = this.jumpForce;
             this.state = "jump";
+        } else if (this.canUppercutJump) {
+            // Allow one jump after an uppercut launches you airborne
+            this.vy = this.jumpForce;
+            this.state = "jump";
+            this.canUppercutJump = false;
         }
     }
 
@@ -100,23 +108,29 @@ class Player {
 
     /* ── Attacks ── */
     punch() {
-        if (this.attackTimer > 0) return;
+        if (this.attackLockout > 0) return;
         this.state = "punch";
-        this.attackTimer = 12;
+        this.attackTimer   = 12;
+        this.attackLockout = 8;
         this.attackBox = { x: this.x + this.width, y: this.y + 35, width: 28, height: 14, damage: 5, knockback: 2 };
     }
 
     kick() {
-        if (this.attackTimer > 0) return;
+        if (this.attackLockout > 0) return;
         this.state = "kick";
-        this.attackTimer = 16;
+        this.attackTimer   = 16;
+        this.attackLockout = 10;
         this.attackBox = { x: this.x + this.width, y: this.y + 52, width: 32, height: 14, damage: 7, knockback: 3 };
     }
 
     uppercut() {
-        if (this.attackTimer > 0) return;
+        if (this.attackLockout > 0) return;
+        if (this.airUppercutCount >= 2) return; // max 2 in the air
         this.state = "uppercut";
-        this.attackTimer = 20;
+        this.attackTimer   = 20;
+        this.attackLockout = 8;
+        this.airUppercutCount++;
+        this.canUppercutJump = true;
         this.vy = -8;
         this.attackBox = { x: this.x + this.width - 10, y: this.y + 5, width: 26, height: 36, damage: 10, knockback: 4 };
     }
@@ -145,8 +159,12 @@ class Player {
         if (this.y >= this.ground) {
             this.y  = this.ground;
             this.vy = 0;
+            this.airUppercutCount = 0;
+            this.canUppercutJump  = false;
             if (this.state === "jump") this.state = "idle";
         }
+
+        if (this.attackLockout > 0) this.attackLockout--;
 
         if (this.attackTimer > 0) {
             this.attackTimer--;
@@ -201,11 +219,7 @@ class Player {
             this._drawShieldBreak(ctx);
         }
 
-        // Debug attack hitbox
-        if (this.attackBox) {
-            ctx.fillStyle = "rgba(255,255,0,0.4)";
-            ctx.fillRect(this.attackBox.x, this.attackBox.y, this.attackBox.width, this.attackBox.height);
-        }
+
     }
 
     /* ── Shield bubble ── */

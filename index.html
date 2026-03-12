@@ -125,13 +125,61 @@ body::after {
 }
 .btn-secondary:hover { color: #fff; border-color: rgba(255,255,255,0.5); }
 
+/* ── MODE SELECT SCREEN ── */
+#screen-mode { gap: 22px; }
+.mode-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 50px; letter-spacing: 5px; margin-bottom: 4px;
+}
+.mode-cards { display: flex; gap: 24px; }
+.mode-card {
+    width: 220px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 4px; padding: 28px 20px;
+    cursor: pointer; transition: border-color 0.15s, background 0.15s;
+    display: flex; flex-direction: column; align-items: center; gap: 10px;
+}
+.mode-card:hover, .mode-card.selected {
+    background: rgba(204,34,34,0.12);
+    border-color: rgba(204,34,34,0.6);
+}
+.mode-card-icon { font-size: 36px; }
+.mode-card-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 22px; letter-spacing: 3px;
+}
+.mode-card-desc {
+    font-size: 13px; color: rgba(255,255,255,0.45);
+    line-height: 1.4;
+}
+/* Difficulty row */
+.diff-row { display: flex; gap: 10px; align-items: center; }
+.diff-label {
+    font-size: 13px; font-weight: 700; letter-spacing: 4px;
+    color: rgba(255,255,255,0.4); text-transform: uppercase;
+    margin-right: 4px;
+}
+.diff-btn {
+    font-family: 'Bebas Neue', sans-serif; letter-spacing: 3px;
+    font-size: 16px; padding: 6px 18px; border: none; cursor: pointer;
+    background: rgba(255,255,255,0.07);
+    color: rgba(255,255,255,0.45);
+    border: 1px solid rgba(255,255,255,0.12); border-radius: 2px;
+    transition: all 0.12s;
+}
+.diff-btn:hover { color: #fff; border-color: rgba(255,255,255,0.4); }
+.diff-btn.selected { background: rgba(204,34,34,0.2); color: #ff6666; border-color: rgba(204,34,34,0.6); }
+/* Hide diff row in 2p */
+.diff-row.hidden-2p { opacity: 0.3; pointer-events: none; }
+
 /* ── CONTROLS SCREEN ── */
-#screen-controls { gap: 24px; }
+#screen-controls { gap: 20px; }
 .controls-title {
     font-family: 'Bebas Neue', sans-serif;
     font-size: 50px; letter-spacing: 5px;
 }
-.controls-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; width: 680px; }
+.controls-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; width: 700px; }
 .controls-section {
     background: rgba(255,255,255,0.04);
     border: 1px solid rgba(255,255,255,0.09);
@@ -142,6 +190,7 @@ body::after {
     color: #cc3333; margin-bottom: 10px;
     border-bottom: 1px solid rgba(204,51,51,0.28); padding-bottom: 7px;
 }
+.controls-section.p2 h3 { color: #4488ff; border-bottom-color: rgba(68,136,255,0.28); }
 .key-row {
     display: flex; align-items: center; gap: 8px;
     margin-bottom: 7px; font-size: 15px; color: rgba(255,255,255,0.72);
@@ -155,7 +204,7 @@ body::after {
     font-size: 13px; color: #fff; min-width: 26px; text-align: center;
 }
 .combo-table {
-    width: 680px;
+    width: 700px;
     background: rgba(255,255,255,0.03);
     border: 1px solid rgba(255,255,255,0.09);
     border-radius: 3px; padding: 16px 22px; text-align: left;
@@ -213,6 +262,35 @@ canvas#gameCanvas {
     100% { opacity: 0; transform: scale(1.08); }
 }
 
+/* ── ROUND BANNER ── */
+#round-banner {
+    position: absolute;
+    top: 50%; left: 50%; transform: translate(-50%, -50%);
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 90px; letter-spacing: 8px; color: #fff;
+    text-shadow: 0 0 60px rgba(220,40,40,0.9);
+    pointer-events: none; z-index: 25;
+    opacity: 0;
+}
+#round-banner.hidden { display: none; }
+#round-banner.pop { animation: roundBannerPop 1.4s ease forwards; }
+@keyframes roundBannerPop {
+    0%   { opacity: 0; transform: translate(-50%,-50%) scale(1.8); }
+    15%  { opacity: 1; transform: translate(-50%,-50%) scale(1.0); }
+    70%  { opacity: 1; transform: translate(-50%,-50%) scale(1.0); }
+    100% { opacity: 0; transform: translate(-50%,-50%) scale(0.85); }
+}
+
+/* ── SOUND TOGGLE ── */
+#sound-toggle {
+    position: absolute; top: 8px; right: 8px;
+    background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.2);
+    color: rgba(255,255,255,0.6); font-size: 18px;
+    cursor: pointer; border-radius: 3px; padding: 3px 8px; z-index: 50;
+    transition: color 0.1s, border-color 0.1s;
+}
+#sound-toggle:hover { color: #fff; border-color: rgba(255,255,255,0.5); }
+
 /* ── END SCREEN OVERLAY ── */
 #end-overlay {
     display: none;
@@ -243,31 +321,22 @@ canvas#gameCanvas {
     to   { transform: scale(1);   opacity: 1; }
 }
 
-/* winner label + sprite block */
 .end-winner-block {
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin-top: 10px;
-    margin-bottom: 28px;
+    margin-top: 10px; margin-bottom: 28px;
     animation: fadeIn 0.5s 0.2s ease both;
-    opacity: 0;
-    animation-fill-mode: forwards;
+    opacity: 0; animation-fill-mode: forwards;
 }
-
 .end-winner-label {
     font-family: 'Barlow Condensed', sans-serif;
     font-size: 13px; font-weight: 700;
-    letter-spacing: 10px;
-    color: rgba(255,255,255,0.45);
-    text-transform: uppercase;
-    margin-bottom: 10px;
+    letter-spacing: 10px; color: rgba(255,255,255,0.45);
+    text-transform: uppercase; margin-bottom: 10px;
 }
-
-/* The sprite is drawn at 3× scale for visibility */
 #winner-sprite-canvas {
     image-rendering: pixelated;
-    /* glow that pulses behind the winner sprite */
     filter: drop-shadow(0 0 18px rgba(255,215,0,0.7));
     animation: winnerGlow 1.8s ease-in-out infinite;
 }
@@ -275,15 +344,11 @@ canvas#gameCanvas {
     0%,100% { filter: drop-shadow(0 0 14px rgba(255,215,0,0.55)); }
     50%     { filter: drop-shadow(0 0 32px rgba(255,215,0,0.95)); }
 }
-
 .end-winner-name {
     font-family: 'Bebas Neue', sans-serif;
-    font-size: 28px; letter-spacing: 6px;
-    color: #FFD700;
-    margin-top: 10px;
-    text-shadow: 0 0 14px rgba(255,215,0,0.5);
+    font-size: 28px; letter-spacing: 6px; color: #FFD700;
+    margin-top: 10px; text-shadow: 0 0 14px rgba(255,215,0,0.5);
 }
-
 .end-divider {
     width: 260px; height: 1px;
     background: linear-gradient(to right, transparent, rgba(255,255,255,0.2), transparent);
@@ -291,7 +356,6 @@ canvas#gameCanvas {
     animation: fadeIn 0.5s 0.35s ease both;
     opacity: 0; animation-fill-mode: forwards;
 }
-
 .end-buttons {
     display: flex; flex-direction: column; align-items: center;
     animation: fadeIn 0.5s 0.45s ease both;
@@ -307,7 +371,7 @@ canvas#gameCanvas {
     <div class="title-glow"></div>
     <div class="title-eyebrow">Student vs Teacher</div>
     <div class="title-main">Combo<br>Crashout</div>
-    <div class="title-sub">Prototype Edition</div>
+    <div class="title-sub">Best of 3 Rounds</div>
     <div class="matchup">
         <div class="fighter-card">
             <canvas id="preview-player" width="88" height="98"></canvas>
@@ -319,45 +383,90 @@ canvas#gameCanvas {
             <div class="fighter-name">The Teacher</div>
         </div>
     </div>
-    <button class="btn btn-primary" onclick="goToControls()">HOW TO PLAY</button>
-    <button class="btn btn-secondary" onclick="startGame()">SKIP TO FIGHT</button>
+    <button class="btn btn-primary" onclick="goToMode()">PLAY</button>
+    <button class="btn btn-secondary" onclick="goToControls()">HOW TO PLAY</button>
+</div>
+
+<!-- ══ MODE SELECT SCREEN ══ -->
+<div class="screen" id="screen-mode">
+    <div class="mode-title">Select Mode</div>
+
+    <div class="mode-cards">
+        <div class="mode-card selected" id="card-1p" onclick="selectMode('1p')">
+            <div class="mode-card-icon">🎮</div>
+            <div class="mode-card-name">1 Player</div>
+            <div class="mode-card-desc">Fight the CPU Teacher.<br>Can you survive class?</div>
+        </div>
+        <div class="mode-card" id="card-2p" onclick="selectMode('2p')">
+            <div class="mode-card-icon">👥</div>
+            <div class="mode-card-name">2 Players</div>
+            <div class="mode-card-desc">Local PvP — same keyboard.<br>Student vs Teacher.</div>
+        </div>
+    </div>
+
+    <!-- Difficulty (1P only) -->
+    <div class="diff-row" id="diff-row">
+        <span class="diff-label">Difficulty</span>
+        <button class="diff-btn" id="diff-easy"   onclick="selectDiff('easy')">Easy</button>
+        <button class="diff-btn selected" id="diff-normal" onclick="selectDiff('normal')">Normal</button>
+        <button class="diff-btn" id="diff-hard"   onclick="selectDiff('hard')">Hard</button>
+    </div>
+
+    <div style="display:flex;flex-direction:column;align-items:center;gap:0;">
+        <button class="btn btn-primary" onclick="startGame()">START MATCH</button>
+        <button class="btn btn-secondary" onclick="goToTitle()">← BACK</button>
+    </div>
 </div>
 
 <!-- ══ CONTROLS SCREEN ══ -->
 <div class="screen" id="screen-controls">
     <div class="controls-title">How to Play</div>
     <div class="controls-grid">
+        <!-- P1 -->
         <div class="controls-section">
-            <h3>Movement</h3>
-            <div class="key-row"><span class="key">A</span><span class="key">D</span> or <span class="key">←</span><span class="key">→</span>&nbsp; Move left / right</div>
-            <div class="key-row"><span class="key">W</span> or <span class="key">↑</span>&nbsp; Jump</div>
-            <div class="key-row"><span class="key">SPACE</span>&nbsp; Hold to raise shield &nbsp;<span style="color:rgba(255,255,255,0.32);font-size:12px">5 hits max</span></div>
+            <h3>Player 1 — Movement</h3>
+            <div class="key-row"><span class="key">A</span><span class="key">D</span>&nbsp; Move left / right</div>
+            <div class="key-row"><span class="key">W</span>&nbsp; Jump</div>
+            <div class="key-row"><span class="key">S</span>&nbsp; Hold to raise shield &nbsp;<span style="color:rgba(255,255,255,0.32);font-size:12px">5 hits max</span></div>
         </div>
         <div class="controls-section">
-            <h3>Attacks</h3>
-            <div class="key-row"><span class="key">J</span>&nbsp; Punch &nbsp;<span style="color:rgba(255,255,255,0.32);font-size:12px">5 dmg</span></div>
-            <div class="key-row"><span class="key">K</span>&nbsp; Kick &nbsp;<span style="color:rgba(255,255,255,0.32);font-size:12px">7 dmg</span></div>
-            <div class="key-row"><span class="key">L</span>&nbsp; Uppercut &nbsp;<span style="color:rgba(255,255,255,0.32);font-size:12px">10 dmg</span></div>
+            <h3>Player 1 — Attacks</h3>
+            <div class="key-row"><span class="key">C</span>&nbsp; Punch &nbsp;<span style="color:rgba(255,255,255,0.32);font-size:12px">5 dmg</span></div>
+            <div class="key-row"><span class="key">V</span>&nbsp; Kick &nbsp;<span style="color:rgba(255,255,255,0.32);font-size:12px">7 dmg</span></div>
+            <div class="key-row"><span class="key">B</span>&nbsp; Uppercut &nbsp;<span style="color:rgba(255,255,255,0.32);font-size:12px">10 dmg</span></div>
+        </div>
+        <!-- P2 -->
+        <div class="controls-section p2">
+            <h3>Player 2 — Movement</h3>
+            <div class="key-row"><span class="key">←</span><span class="key">→</span>&nbsp; Move left / right</div>
+            <div class="key-row"><span class="key">↑</span>&nbsp; Jump</div>
+            <div class="key-row"><span class="key">↓</span>&nbsp; Hold to raise shield</div>
+        </div>
+        <div class="controls-section p2">
+            <h3>Player 2 — Attacks</h3>
+            <div class="key-row"><span class="key">,</span>&nbsp; Punch</div>
+            <div class="key-row"><span class="key">.</span>&nbsp; Kick</div>
+            <div class="key-row"><span class="key">/</span>&nbsp; Uppercut</div>
         </div>
     </div>
     <div class="combo-table">
-        <h3>Combos — chain inputs quickly for bonus damage &amp; effects</h3>
+        <h3>Combos (Player 1) — chain inputs quickly for bonus damage</h3>
         <div class="combo-rows">
-            <div class="combo-entry"><span class="combo-keys">J → J</span> Double Punch <span class="tier-badge tier-2">T2</span></div>
-            <div class="combo-entry"><span class="combo-keys">K → K</span> Double Kick <span class="tier-badge tier-2">T2</span></div>
-            <div class="combo-entry"><span class="combo-keys">J → K</span> Jab Kick <span class="tier-badge tier-2">T2</span></div>
-            <div class="combo-entry"><span class="combo-keys">K → L</span> Kick Uppercut <span class="tier-badge tier-2">T2</span></div>
-            <div class="combo-entry"><span class="combo-keys">W → J</span> Jump Punch <span class="tier-badge tier-2">T2</span></div>
-            <div class="combo-entry"><span class="combo-keys">W → K</span> Jump Kick <span class="tier-badge tier-2">T2</span></div>
-            <div class="combo-entry"><span class="combo-keys">J → J → K</span> Haymaker Finish <span class="tier-badge tier-3">T3</span></div>
-            <div class="combo-entry"><span class="combo-keys">J → K → L</span> Chain Breaker <span class="tier-badge tier-3">T3</span></div>
-            <div class="combo-entry"><span class="combo-keys">K → K → J</span> Double Kick Jab <span class="tier-badge tier-3">T3</span></div>
-            <div class="combo-entry"><span class="combo-keys">W → J → J</span> Air Assault <span class="tier-badge tier-3">T3</span></div>
-            <div class="combo-entry"><span class="combo-keys">W → K → L</span> Sky Slam <span class="tier-badge tier-3">T3</span></div>
+            <div class="combo-entry"><span class="combo-keys">C → C</span> Double Punch <span class="tier-badge tier-2">T2</span></div>
+            <div class="combo-entry"><span class="combo-keys">V → V</span> Double Kick <span class="tier-badge tier-2">T2</span></div>
+            <div class="combo-entry"><span class="combo-keys">C → V</span> Jab Kick <span class="tier-badge tier-2">T2</span></div>
+            <div class="combo-entry"><span class="combo-keys">V → B</span> Kick Uppercut <span class="tier-badge tier-2">T2</span></div>
+            <div class="combo-entry"><span class="combo-keys">W → C</span> Jump Punch <span class="tier-badge tier-2">T2</span></div>
+            <div class="combo-entry"><span class="combo-keys">W → V</span> Jump Kick <span class="tier-badge tier-2">T2</span></div>
+            <div class="combo-entry"><span class="combo-keys">C → C → V</span> Haymaker Finish <span class="tier-badge tier-3">T3</span></div>
+            <div class="combo-entry"><span class="combo-keys">C → V → B</span> Chain Breaker <span class="tier-badge tier-3">T3</span></div>
+            <div class="combo-entry"><span class="combo-keys">V → V → C</span> Double Kick Jab <span class="tier-badge tier-3">T3</span></div>
+            <div class="combo-entry"><span class="combo-keys">W → C → C</span> Air Assault <span class="tier-badge tier-3">T3</span></div>
+            <div class="combo-entry"><span class="combo-keys">W → V → B</span> Sky Slam <span class="tier-badge tier-3">T3</span></div>
         </div>
     </div>
     <div class="btn-row">
-        <button class="btn btn-primary" onclick="startGame()">START MATCH</button>
+        <button class="btn btn-primary" onclick="goToMode()">SELECT MODE</button>
         <button class="btn btn-secondary" onclick="goToTitle()">← BACK</button>
     </div>
 </div>
@@ -367,21 +476,25 @@ canvas#gameCanvas {
     <h1>COMBO CRASHOUT</h1>
     <canvas id="gameCanvas" width="900" height="500"></canvas>
 
+    <!-- Sound toggle -->
+    <button id="sound-toggle" onclick="toggleSound()" title="Toggle sound">🔊</button>
+
     <!-- Countdown overlay -->
     <div id="countdown-overlay">
         <div id="countdown-number"></div>
     </div>
 
+    <!-- Round banner -->
+    <div id="round-banner" class="hidden"></div>
+
     <!-- End screen overlay -->
     <div id="end-overlay">
         <div class="end-ko">K.O.</div>
-
         <div class="end-winner-block">
             <div class="end-winner-label">Winner</div>
             <canvas id="winner-sprite-canvas"></canvas>
             <div class="end-winner-name" id="end-winner-name"></div>
         </div>
-
         <div class="end-divider"></div>
         <div class="end-buttons">
             <button class="btn btn-primary" onclick="rematch()">REMATCH</button>
@@ -394,10 +507,11 @@ canvas#gameCanvas {
 <script src="combat.js"></script>
 <script src="player.js"></script>
 <script src="enemy.js"></script>
+<script src="sounds.js"></script>
 <script src="game.js"></script>
 
 <script>
-// ── sprite previews on title ──
+// ── Sprite previews on title ──
 (function() {
     const pi = new Image(); pi.src = "sprite_sheet_clean.png";
     pi.onload = () => {
@@ -413,126 +527,126 @@ canvas#gameCanvas {
     };
 })();
 
-// ── screen navigation ──
+// ── Screen navigation ──
 function showScreen(id) {
     document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
     document.getElementById(id).classList.add('active');
 }
 function goToTitle() {
-    stopWinnerAnimation();
-    hideEndScreen();
+    stopWinnerAnimation(); hideEndScreen();
+    SFX.stopMusic();
     showScreen('screen-title');
 }
 function goToControls() { showScreen('screen-controls'); }
+function goToMode()     { showScreen('screen-mode'); }
 
+// ── Mode select ──
+function selectMode(mode) {
+    window.gameMode = mode;
+    document.querySelectorAll('.mode-card').forEach(c => c.classList.remove('selected'));
+    document.getElementById('card-' + mode).classList.add('selected');
+    const diffRow = document.getElementById('diff-row');
+    if (mode === '2p') diffRow.classList.add('hidden-2p');
+    else               diffRow.classList.remove('hidden-2p');
+}
+
+// ── Difficulty select ──
+function selectDiff(d) {
+    window.gameDifficulty = d;
+    document.querySelectorAll('.diff-btn').forEach(b => b.classList.remove('selected'));
+    document.getElementById('diff-' + d).classList.add('selected');
+}
+
+// ── Start / Rematch ──
 function startGame() {
-    stopWinnerAnimation();
-    hideEndScreen();
+    stopWinnerAnimation(); hideEndScreen();
+    resetRounds();
     showScreen('screen-game');
     initGame();
+    SFX.startMusic();
     beginCountdown();
 }
+
 function rematch() {
-    stopWinnerAnimation();
-    hideEndScreen();
+    stopWinnerAnimation(); hideEndScreen();
+    resetRounds();
     initGame();
     beginCountdown();
 }
 
-// ── end screen ──
-// Sprite configs for the winner animation
+// ── Sound toggle ──
+let _soundMuted = false;
+function toggleSound() {
+    _soundMuted = !_soundMuted;
+    SFX.setMusicVolume(_soundMuted ? 0 : 0.18);
+    SFX.setSfxVolume(_soundMuted ? 0 : 0.55);
+    document.getElementById('sound-toggle').textContent = _soundMuted ? '🔇' : '🔊';
+}
+
+// ── End screen ──
 const WINNER_CONFIGS = {
     player: {
-        src:        "sprite_sheet_clean.png",
-        frameW:     88,   frameH:  98,
-        drawW:      88,   drawH:   98,
-        idleRow:    0,    idleFrames: 6,
-        scale:      3,
-        label:      "PLAYER WINS"
+        src: "sprite_sheet_clean.png",
+        frameW: 88,  frameH: 98,
+        drawW:  88,  drawH:  98,
+        idleRow: 0,  idleFrames: 6,
+        scale: 3,    label: "PLAYER 1 WINS"
     },
     enemy: {
-        src:        "teacher_sprite_sheet.png",
-        frameW:     201,  frameH:  231,
-        drawW:      88,   drawH:   102,
-        idleRow:    0,    idleFrames: 6,
-        scale:      3,
-        label:      "TEACHER WINS"
+        src: "teacher_sprite_sheet.png",
+        frameW: 201, frameH: 231,
+        drawW:  88,  drawH:  102,
+        idleRow: 0,  idleFrames: 6,
+        scale: 3,    label: window.gameMode === "2p" ? "PLAYER 2 WINS" : "TEACHER WINS"
     }
 };
 
-let _winnerAnimId   = null;
-let _winnerFrame    = 0;
-let _winnerTick     = 0;
-const WINNER_FPS_INTERVAL = 8; // advance frame every N animation ticks (~8 frames @ 60fps)
+let _winnerAnimId = null, _winnerFrame = 0, _winnerTick = 0;
+const WINNER_FPS_INTERVAL = 8;
 
 function showEndScreen(winnerId) {
+    // Update label for 2p
+    WINNER_CONFIGS.enemy.label = window.gameMode === "2p" ? "PLAYER 2 WINS" : "TEACHER WINS";
+    WINNER_CONFIGS.player.label = window.gameMode === "2p" ? "PLAYER 1 WINS" : "PLAYER WINS";
+
     const cfg = WINNER_CONFIGS[winnerId];
     const spriteCanvas = document.getElementById('winner-sprite-canvas');
-    const sCtx         = spriteCanvas.getContext('2d');
-
-    // Size the canvas to 3× the draw size
+    const sCtx = spriteCanvas.getContext('2d');
     spriteCanvas.width  = cfg.drawW * cfg.scale;
     spriteCanvas.height = cfg.drawH * cfg.scale;
     sCtx.imageSmoothingEnabled = false;
-
     document.getElementById('end-winner-name').textContent = cfg.label;
 
-    // Load (or reuse) the sprite image
-    const img = new Image();
-    img.src = cfg.src;
-
-    _winnerFrame = 0;
-    _winnerTick  = 0;
+    const img = new Image(); img.src = cfg.src;
+    _winnerFrame = 0; _winnerTick = 0;
 
     function animate() {
         sCtx.clearRect(0, 0, spriteCanvas.width, spriteCanvas.height);
-        sCtx.drawImage(
-            img,
-            _winnerFrame * cfg.frameW,          // source x
-            cfg.idleRow  * cfg.frameH,          // source y  (row 0 = idle)
-            cfg.frameW,  cfg.frameH,            // source size
-            0, 0,                               // dest position
-            cfg.drawW * cfg.scale,              // dest width  (scaled up)
-            cfg.drawH * cfg.scale               // dest height (scaled up)
+        sCtx.drawImage(img,
+            _winnerFrame * cfg.frameW, cfg.idleRow * cfg.frameH,
+            cfg.frameW, cfg.frameH,
+            0, 0, cfg.drawW * cfg.scale, cfg.drawH * cfg.scale
         );
-
         _winnerTick++;
-        if (_winnerTick >= WINNER_FPS_INTERVAL) {
-            _winnerTick  = 0;
-            _winnerFrame = (_winnerFrame + 1) % cfg.idleFrames;
-        }
+        if (_winnerTick >= WINNER_FPS_INTERVAL) { _winnerTick = 0; _winnerFrame = (_winnerFrame + 1) % cfg.idleFrames; }
         _winnerAnimId = requestAnimationFrame(animate);
     }
+    if (img.complete) animate(); else img.onload = animate;
 
-    // Start once image is ready
-    if (img.complete) {
-        animate();
-    } else {
-        img.onload = animate;
-    }
-
-    // Show overlay
     const overlay = document.getElementById('end-overlay');
     overlay.classList.remove('visible');
     void overlay.offsetWidth;
     overlay.classList.add('visible');
+    SFX.stopMusic();
 }
 
-function hideEndScreen() {
-    document.getElementById('end-overlay').classList.remove('visible');
-}
+function hideEndScreen()      { document.getElementById('end-overlay').classList.remove('visible'); }
+function stopWinnerAnimation() { if (_winnerAnimId !== null) { cancelAnimationFrame(_winnerAnimId); _winnerAnimId = null; } }
 
-function stopWinnerAnimation() {
-    if (_winnerAnimId !== null) {
-        cancelAnimationFrame(_winnerAnimId);
-        _winnerAnimId = null;
-    }
-}
-
-// ── countdown ──
+// ── Countdown ──
 function beginCountdown() {
     const el = document.getElementById('countdown-number');
-    const steps = [5, 4, 3, 2, 1, 'FIGHT!'];
+    const steps = [3, 2, 1, 'FIGHT!'];
     let i = 0;
     window._countdownDone = false;
 
@@ -543,7 +657,7 @@ function beginCountdown() {
         void el.offsetWidth;
         el.className = steps[i] === 'FIGHT!' ? 'fight' : 'pop';
         i++;
-        setTimeout(tick, 1000);
+        setTimeout(tick, 900);
     }
     tick();
 }
